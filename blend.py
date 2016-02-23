@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-import os
+import os.path
 import sys
 
 from PIL import Image, ImageFilter
 
 SIZE = (32, 32)
 
-def open_and_resize(fp):
-    im = Image.open(fp)
+def open_and_resize(path):
+    im = Image.open(path)
     return im.resize(SIZE, resample=Image.LANCZOS)
 
 def strip_ext(path):
@@ -32,15 +32,13 @@ def main():
     im1 = open_and_resize(sys.argv[2])
     im2 = open_and_resize(sys.argv[3])
 
-    name1 = strip_ext(sys.argv[2])
-    name2 = strip_ext(sys.argv[3])
-
-    base = os.path.normpath(sys.argv[1]) + '/' + name1 + '-' + name2
+    base = os.path.normpath(sys.argv[1]) + '/' + \
+        strip_ext(sys.argv[2]) + '-' + strip_ext(sys.argv[3])
 
     for i in xrange(1, 100):
         alpha = float(i) / 100
         out = Image.blend(im1, im2, alpha)
-        out.save(base + '-' + '{:4.2f}'.format(alpha) + '.jpg')
+        out.save(base + '-' + '{:0>2d}'.format(i) + '.jpg')
 
 if __name__ == '__main__':
     main()
