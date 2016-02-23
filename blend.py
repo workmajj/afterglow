@@ -42,5 +42,5 @@ def main():
         out = Image.blend(im1, im2, alpha)
         out.save(base + '-' + '{:4.2f}'.format(alpha) + '.jpg')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
