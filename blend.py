@@ -7,11 +7,11 @@ from PIL import Image, ImageFilter
 
 SIZE = (32, 32)
 
-def im_open_and_resize(fp):
+def open_and_resize(fp):
     im = Image.open(fp)
     return im.resize(SIZE, resample=Image.LANCZOS)
 
-def basename_strip_ext(path):
+def strip_ext(path):
     ext = os.path.splitext(path)[1]
     name = os.path.basename(path)
     return name[:name.rfind(ext)]
@@ -29,13 +29,13 @@ def main():
     if os.path.samefile(sys.argv[2], sys.argv[3]):
         sys.exit('files are the same')
 
-    im1 = im_open_and_resize(sys.argv[2])
-    im2 = im_open_and_resize(sys.argv[3])
+    im1 = open_and_resize(sys.argv[2])
+    im2 = open_and_resize(sys.argv[3])
 
-    f1 = basename_strip_ext(sys.argv[2])
-    f2 = basename_strip_ext(sys.argv[3])
+    name1 = strip_ext(sys.argv[2])
+    name2 = strip_ext(sys.argv[3])
 
-    base = os.path.normpath(sys.argv[1]) + '/' + f1 + '-' + f2
+    base = os.path.normpath(sys.argv[1]) + '/' + name1 + '-' + name2
 
     for i in xrange(1, 100):
         alpha = float(i) / 100
