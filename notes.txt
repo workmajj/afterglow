@@ -1,0 +1,24 @@
+passwd (=> <new>)
+
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install --yes ufw
+sudo apt-get install --yes fail2ban
+sudo apt-get install --yes screen
+sudo apt-get install --yes vim
+sudo apt-get clean
+
+sudo vim /etc/hostname (=> pi)
+sudo raspi-config (=> expand fs & => set timezone)
+
+***
+
+sudo apt-get install --yes python-dev
+sudo apt-get install --yes python-imaging
+
+wget https://github.com/adafruit/rpi-rgb-led-matrix/archive/master.zip
+unzip master.zip
+
+***
+
+https://learn.adafruit.com/adafruits-raspberry-pi-lesson-3-network-setup/setting-up-wifi-with-occidentalis
