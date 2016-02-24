@@ -32,13 +32,13 @@ def main():
     im1 = open_and_resize(sys.argv[2])
     im2 = open_and_resize(sys.argv[3])
 
-    base = os.path.normpath(sys.argv[1]) + '/' + \
-        strip_ext(sys.argv[2]) + '-' + strip_ext(sys.argv[3])
+    prefix = os.path.normpath(sys.argv[1]) + '/' + \
+        strip_ext(sys.argv[2]) + '-' + strip_ext(sys.argv[3]) + '-'
 
     for i in xrange(1, 100):
         alpha = float(i) / 100
         out = Image.blend(im1, im2, alpha)
-        out.save(base + '-' + '{:0>2d}'.format(i) + '.jpg')
+        out.save(prefix + '{:0>2d}'.format(i) + '.jpg') # e.g., one-two-26.jpg
 
 if __name__ == '__main__':
     main()
