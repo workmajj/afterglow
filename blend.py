@@ -21,6 +21,19 @@ def strip_ext(path):
     name = os.path.basename(path)
     return name[:name.rfind(ext)]
 
+def blend(path1, path2, dir_tmp):
+    im1 = open_and_resize(path1)
+    im2 = open_and_resize(path2)
+
+    # format: <im1_no_ext>-<im2_no_ext>-<alpha_as_pct>.<ext>
+
+    prefix = '{}/{}-{}-'.format(dir_tmp, strip_ext(path1), strip_ext(path2))
+
+    for i in xrange(0, 100):
+        alpha = float(i) / 100
+        out = Image.blend(im1, im2, alpha)
+        out.save(prefix + '{:0>2d}{}'.format(i, JPEG))
+
 def main():
     if len(sys.argv) != 3:
         sys.exit('usage: {} <src_dir> <tmp_dir>'.format(sys.argv[0]))
@@ -33,24 +46,13 @@ def main():
     dir_tmp = os.path.normpath(sys.argv[2])
 
     images = sorted(list_files_with_ext(dir_src, JPEG))
+
     if not images:
         sys.exit('no {} files in {}'.format(JPEG, dir_src))
 
-    for curr, _ in enumerate(images):
+    for curr, image in enumerate(images):
         next = curr + 1 if curr + 1 < len(images) else 0
-
-        im1 = open_and_resize(images[curr])
-        im2 = open_and_resize(images[next])
-
-        # format: <im1_no_ext>-<im2_no_ext>-<alpha_as_pct>.jpg
-
-        prefix = dir_tmp + '/' + \
-            strip_ext(images[curr]) + '-' + strip_ext(images[next]) + '-'
-
-        for i in xrange(0, 100):
-            alpha = float(i) / 100
-            out = Image.blend(im1, im2, alpha)
-            out.save(prefix + '{:0>2d}.jpg'.format(i))
+        blend(image, images[next], dir_tmp)
 
 if __name__ == '__main__':
     main()
