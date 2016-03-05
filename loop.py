@@ -1,28 +1,43 @@
 #!/usr/bin/env python
 
+import os.path
+import sys
 import time
 
 from PIL import Image, ImageDraw
 from rgbmatrix import Adafruit_RGBmatrix
 
-SLEEP = 0.05
+MATRIX_SIZE = 32
+MATRIX_CHAIN = 1
 
-def show(num):
-    f = 'glow12-glow33-{:0>2d}.jpg'.format(num) # FIXME
-    print f
-    im = Image.open('img/blend/' + f) # FIXME
-    im.load()
-    matrix.SetImage(im.im.id, 0, 0)
-    time.sleep(SLEEP)
+JPEG = '.jpg'
+SLEEP = 0.2
+
+def list_files_with_ext(dir_src, ext):
+    files = [os.path.join(dir_src, f) for f in os.listdir(dir_src)]
+    return [f for f in files if os.path.splitext(f)[1] == ext]
 
 def main():
-    matrix = Adafruit_RGBmatrix(32, 1)
+    if len(sys.argv) != 2:
+        sys.exit('usage: {} <src_dir>'.format(sys.argv[0]))
 
-    for i in xrange(10):
-        for j in xrange(1, 99):
-            show(j)
-        for j in xrange(99, 1, -1):
-            show(j)
+    if not os.path.isdir(sys.argv[1]):
+        sys.exit('{} is not a directory'.format(sys.argv[1]))
+
+    dir_src = os.path.normpath(sys.argv[1])
+    images = sorted(list_files_with_ext(dir_src, JPEG))
+
+    matrix = Adafruit_RGBmatrix(MATRIX_SIZE, MATRIX_CHAIN)
+
+    try:
+        while True:
+            for image in images:
+                im = Image.open(image)
+                im.load()
+                matrix.SetImage(im.im.id, 0, 0)
+                time.sleep(SLEEP)
+    except KeyboardInterrupt:
+        pass
 
     matrix.Clear()
 
