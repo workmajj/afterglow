@@ -4,7 +4,7 @@ import os.path
 import sys
 import time
 
-from PIL import Image, ImageDraw
+from PIL import Image
 from rgbmatrix import Adafruit_RGBmatrix
 
 MATRIX_SIZE = 32
@@ -13,7 +13,7 @@ MATRIX_CHAIN = 1
 JPEG = '.jpg'
 SLEEP = 0.2
 
-def list_files_with_ext(dir_src, ext):
+def list_files_with_ext(dir_src, ext): # FIXME: common func
     files = [os.path.join(dir_src, f) for f in os.listdir(dir_src)]
     return [f for f in files if os.path.splitext(f)[1] == ext]
 
