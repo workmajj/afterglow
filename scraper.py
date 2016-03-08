@@ -23,13 +23,17 @@ def get_json(user):
     # clip on left- and rightmost braces to parse text
     left = content.find('{')
     right = content.rfind('}')
+
     return json.loads(content[left:right+1])
 
 def get_images(json):
     for node in json['entry_data']['ProfilePage'][0]['user']['media']['nodes']:
         if node['is_video']:
             continue
-        f = 'tmp/{}+{}.jpg'.format(int(node['date']), node['code'])
+
+        f = 'tmp/{:.0f}+{}+{}.jpg'.format(node['date'],
+            node['owner']['id'], node['code'])
+
         print urllib.urlretrieve(node['display_src'], f)
 
 def main():
