@@ -23,9 +23,7 @@ def get_json(user):
     # clip on left- and rightmost braces to parse text
     left = content.find('{')
     right = content.rfind('}')
-    json = json.loads(content[left:right+1])
-
-    return json
+    return json.loads(content[left:right+1])
 
 def get_images(json):
     for node in json['entry_data']['ProfilePage'][0]['user']['media']['nodes']:
