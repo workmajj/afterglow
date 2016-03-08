@@ -7,22 +7,34 @@ import urllib2
 
 from bs4 import BeautifulSoup
 
-page = urllib2.urlopen('https://www.instagram.com/workmajj/')
-soup = BeautifulSoup(page, 'html.parser')
+IG_BASE_URL = 'https://www.instagram.com'
+IG_JSON_VAR = 'window._sharedData'
 
-# TODO: assert page structure
-anchors = soup.find_all('script', string=re.compile('window._sharedData'))
-content = anchors[0].contents[0]
+# FIXME: assert page and json structure
 
-left = content.find('{')
-right = content.rfind('}')
-json = json.loads(content[left:right+1])
+def get_json(user):
+    page = urllib2.urlopen('{}/{}/'.format(IG_BASE_URL, user))
+    soup = BeautifulSoup(page, 'html.parser')
 
-try:
+    anchors = soup.find_all('script', string=re.compile(IG_JSON_VAR))
+    content = anchors[0].contents[0]
+
+    left = content.find('{')
+    right = content.rfind('}')
+
+    return json.loads(content[left:right+1])
+
+def get_images(json):
     for node in json['entry_data']['ProfilePage'][0]['user']['media']['nodes']:
         if node['is_video']:
             continue
-        f = 'tmp/' + str(int(node['date'])) + '+' + str(node['code']) + '.jpg'
+
+        f = 'tmp/{}+{}.jpg'.format(int(node['date']), node['code'])
         print urllib.urlretrieve(node['display_src'], f)
-except KeyError:
-    pass # TODO: assert json structure
+
+def main():
+        json = get_json('workmajj') # FIXME
+        get_images(json)
+
+if __name__ == '__main__':
+    main()
