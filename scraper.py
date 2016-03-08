@@ -16,19 +16,21 @@ def get_json(user):
     page = urllib2.urlopen('{}/{}/'.format(IG_BASE_URL, user))
     soup = BeautifulSoup(page, 'html.parser')
 
+    # search <script> tags for image payload as json
     anchors = soup.find_all('script', string=re.compile(IG_JSON_VAR))
     content = anchors[0].contents[0]
 
+    # clip on left- and rightmost braces to parse text
     left = content.find('{')
     right = content.rfind('}')
+    json = json.loads(content[left:right+1])
 
-    return json.loads(content[left:right+1])
+    return json
 
 def get_images(json):
     for node in json['entry_data']['ProfilePage'][0]['user']['media']['nodes']:
         if node['is_video']:
             continue
-
         f = 'tmp/{}+{}.jpg'.format(int(node['date']), node['code'])
         print urllib.urlretrieve(node['display_src'], f)
 
