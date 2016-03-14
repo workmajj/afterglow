@@ -13,23 +13,27 @@ IG_BASE_URL = 'https://www.instagram.com'
 IG_JSON_VAR = 'window._sharedData'
 
 def ig_user_to_json(user):
-    page = urllib2.urlopen('{}/{}/'.format(IG_BASE_URL, user))
+    try:
+        page = urllib2.urlopen('{}/{}/'.format(IG_BASE_URL, user))
+    except urllib2.HTTPError:
+        sys.exit('could not get page for user {}'.format(user))
+
+    # search <script> tags for json var, trim whitespace, and parse
+
     soup = BeautifulSoup(page, 'html.parser')
-
-    # search <script> tags for var, then trim whitespace and parse as json
-
     tags = soup.find_all('script', string=re.compile(IG_JSON_VAR))
+
     if not tags:
         sys.exit('could not find json text on page')
 
-    content = tags[0].contents[0]
+    text = tags[0].contents[0]
+    l = text.find('{')
+    r = text.rfind('}')
 
-    l = content.find('{')
-    r = content.rfind('}')
     if l == -1 or r == -1:
         sys.exit('malformed json text on page')
 
-    return json.loads(content[l:r+1])
+    return json.loads(text[l:r+1])
 
 def get_images(json):
     try:
