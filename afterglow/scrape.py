@@ -46,13 +46,13 @@ def get_images(json):
             continue
 
         f = 'ig/{:.0f}+{}+{}.jpg'.format(node['date'],
-            node['owner']['id'], node['code'])
+            node['owner']['id'], node['code']) # FIXME: dst dir
 
         print urllib.urlretrieve(node['display_src'], f)
 
 def main():
     if len(sys.argv) != 3:
-        sys.exit('usage: {} <ig_user> <tmp_dir>'.format(sys.argv[0]))
+        sys.exit('usage: {} <ig_user> <dst_dir>'.format(sys.argv[0]))
 
     if not os.path.isdir(sys.argv[2]):
         sys.exit('{} is not a directory'.format(sys.argv[2]))
